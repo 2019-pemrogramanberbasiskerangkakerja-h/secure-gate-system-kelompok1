@@ -18,10 +18,7 @@ app.set('view engine','pug');
 app.use(session({
     secret : '3cutepeeg',
     resave : false,
-    saveUninitialized : true,
-    cookie :{
-        secure:true
-    }
+    saveUninitialized : true
 }));
 
 
