@@ -3,6 +3,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const route = require('./route/routes');
+const flash = require('express-flash');
 
 const app =express();
 
@@ -20,6 +21,8 @@ app.use(session({
     resave : false,
     saveUninitialized : true
 }));
+
+app.use(flash());
 
 
 app.use('/',route);
