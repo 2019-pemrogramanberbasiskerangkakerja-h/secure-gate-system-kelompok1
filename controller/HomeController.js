@@ -3,13 +3,8 @@ let route = express.Router();
 let conn = require('../database/db');
 
 exports.index= (req,res)=>{
-    console.log(req.session.nrp);
-    if(req.session.nrp=== undefined || req.session.nrp==='-'){
-      var gate = req.query.gate;
-      if(!req.query.gate){
-        return res.redirect('/?gate=1');
-      }
-      return res.render('login',{gate:gate});
+    if(req.session.nrp=== undefined || req.session.nrp==='0'){
+      return res.render('login');
     }
     else{
       return res.redirect('/dashboard');
@@ -27,7 +22,8 @@ exports.login=  (req,res)=>{
   conn.query("SELECT * from users where users.nrp=? AND users.password=?",[nrp,password],(err,rows,fields)=>{
     if(rows.length==0){ //kalau salah username / password
       req.flash('error','Tidak user'+gate);
-      return res.redirect('/?gate='+gate);
+      console.log("username / password salah")
+      return res.redirect('/');
       res.end();
     }
 
@@ -37,7 +33,6 @@ exports.login=  (req,res)=>{
       conn.query("INSERT INTO log(name_log,id_users,id_gate) VALUES(?,?,?)",["try login",id_user,gate],(err,rows,fields)=>{ //bikin log
         if(err) console.log(err);
         conn.query("SELECT * FROM access where id_users=? and id_gate=?",[id_user,gate],(err,rows,fields)=>{ //check access
-          console.log(id_user);
           if(err) console.log(err);
           if(rows.length==0){ //kalau ga punya access
             // console.log("masuk");
@@ -45,7 +40,7 @@ exports.login=  (req,res)=>{
               if(err) console.log(err);
             });
             console.log("Tidak ada access");
-            return res.redirect('/?gate='+gate);
+            return res.redirect('/');
             res.end();
           }
           else{ // punya access
@@ -74,7 +69,7 @@ exports.login=  (req,res)=>{
                     conn.query("INSERT INTO log(name_log,id_users,id_gate) VALUES(?,?,?)",["gate not open yet",rows[0].id_user,gate],(err,rows,fields)=>{
                       if(err) console.log(err);
                       console.log("Gate belum buka");
-                      return res.redirect('/?gate='+gate);
+                      return res.redirect('/');
                       res.end();
                     })
                   }
@@ -88,12 +83,19 @@ exports.login=  (req,res)=>{
   });
 }
 
+exports.adduser=(req,res)=>{
+  console.log(req.params);
+  res.status(200);
+  res.send(req.params);
+}
+
 exports.dashboard=(req,res)=>{
   // console.log(req.session.nrp);
-  if(req.session.nrp===undefined || req.session.nrp==='-'){
+  if(req.session.nrp===undefined || req.session.nrp==='0'){
     return res.redirect('/');
   }
-  return res.render('index');
+  var gate = req.session.gate;
+  return res.render('index',{gate:gate});
 }
 
 exports.logout=(req,res)=>{
@@ -103,7 +105,7 @@ exports.logout=(req,res)=>{
     var id_gate = req.session.gate;
     conn.query("INSERT INTO log(name_log,id_users,id_gate) VALUES(?,?,?)",["logout",id_user,id_gate],(err,rows,fields)=>{
       if(err) console.log(err);
-      req.session.nrp='-';
+      req.session.nrp='0';
       req.session.gate='-';
       return res.redirect('/');
     })
