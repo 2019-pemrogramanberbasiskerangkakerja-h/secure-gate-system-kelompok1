@@ -7,6 +7,7 @@ route.get('/',HomeController.index);
 route.post('/login',HomeController.login);
 
 route.get('/dashboard',HomeController.dashboard);
+route.get('/logout',HomeController.logout);
 
 
 module.exports=route;

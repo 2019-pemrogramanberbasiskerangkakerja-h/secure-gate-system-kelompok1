@@ -4,14 +4,18 @@ let conn = require('../database/db');
 
 exports.index= (req,res)=>{
     console.log(req.session.nrp);
-    if(req.session.nrp!== undefined){
+    if(req.session.nrp=== undefined || req.session.nrp==='-'){
+      var gate = req.query.gate;
+      if(!req.query.gate){
+        return res.redirect('/?gate=1');
+      }
+      return res.render('login',{gate:gate});
+    }
+    else{
       return res.redirect('/dashboard');
     }
-    var gate = req.query.gate;
-    if(!req.query.gate){
-      return res.redirect('/?gate=1');
-    }
-    return res.render('login',{gate:gate});
+
+
 };
 
 exports.login=  (req,res)=>{
@@ -59,6 +63,7 @@ exports.login=  (req,res)=>{
                     conn.query("INSERT INTO log(name_log,id_users,id_gate) VALUES(?,?,?)",["login berhasil",rows[0].id_user,gate],(err,rows,fields)=>{
                       if(err) console.log(err);
                       req.session.nrp = nrp;
+                      req.session.gate = gate;
                       console.log(req.session.nrp);
                       return res.redirect('/dashboard');
                       res.end();
@@ -85,5 +90,23 @@ exports.login=  (req,res)=>{
 
 exports.dashboard=(req,res)=>{
   // console.log(req.session.nrp);
+  if(req.session.nrp===undefined || req.session.nrp==='-'){
+    return res.redirect('/');
+  }
   return res.render('index');
+}
+
+exports.logout=(req,res)=>{
+  conn.query("SELECT * FROM users where nrp=?",[req.session.nrp],(err,rows,fields)=>{
+    if(err) console.log(err);
+    var id_user = rows[0].id_users;
+    var id_gate = req.session.gate;
+    conn.query("INSERT INTO log(name_log,id_users,id_gate) VALUES(?,?,?)",["logout",id_user,id_gate],(err,rows,fields)=>{
+      if(err) console.log(err);
+      req.session.nrp='-';
+      req.session.gate='-';
+      return res.redirect('/');
+    })
+  })
+
 }
