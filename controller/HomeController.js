@@ -218,5 +218,39 @@ exports.delUserId=(req,res)=>{
   }
  }
 
+exports.addGate=(req,res)=>{
+  var jam_buka = req.body.jam_buka;
+  var jam_tutup = req.body.jam_tutup;
+  if(!jam_buka && !jam_tutup){
+    res.status(404);
+    res.setHeader('Content-Type','application/json');
+    res.send(JSON.stringify({'status' : 'error'}));
+    return;
+  }
+  else{
+    conn.query("INSERT INTO gate(jam_buka,jam_tutup) VALUES(?,?)",[jam_buka,jam_tutup],(err,rows,fields)=>{
+      if(err) console.log(err);
+      else{
+        res.status(200);
+        res.setHeader('Content-Type','application/json');
+        res.send(JSON.stringify({'status' : 'success'}));
+        return;
+      }
+    })
+  }
+ }
+
+exports.getGates=(req,res)=>{
+  conn.query("SELECT * FROM gate",(err,rows,fields)=>{
+    if(err) console.log(err);
+    else{
+      res.status(200);
+      res.setHeader('Content-Type','application/json');
+      res.send(JSON.stringify({'gates' : rows}));
+      return;
+    }
+  });
+ }
+
 
 //END OF API
