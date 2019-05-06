@@ -9,7 +9,16 @@ route.post('/login',HomeController.login);
 route.get('/dashboard',HomeController.dashboard);
 route.get('/logout',HomeController.logout);
 
-route.post('/addUser/:username/:password/:group',HomeController.adduser);
+//api
+route.post('/users',HomeController.addUser);
+route.get('/users',HomeController.user);
+route.get('/users/:userid',HomeController.getuserID);
+route.delete('/users/:userid',HomeController.delUserId);
+//
+route.post('/gates',HomeController.addGate);
+route.get('/gates',HomeController.getGates);
+route.get('/gates/:gateid',HomeController.getGateID);
+route.delete('/gates/:gateid',HomeController.delGateID);
 
 
 module.exports=route;
