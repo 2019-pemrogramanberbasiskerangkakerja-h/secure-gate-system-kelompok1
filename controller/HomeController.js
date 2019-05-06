@@ -112,3 +112,111 @@ exports.logout=(req,res)=>{
   })
 
 }
+
+//START API SECTION
+exports.addUser=(req,res)=>{
+  var nrp = req.body.nrp;
+  var password = req.body.password;
+  if(!nrp&&!password){
+    res.status(404);
+    res.setHeader('Content-Type','application/json');
+    res.send(JSON.stringify({'status' : 'error'}));
+    return;
+  }
+  else{
+    conn.query("INSERT INTO users(nrp,password) VALUES(?,?)",[nrp,password],(err,rows,fields)=>{
+      if(err) {
+        if(err.errno==1062){
+          res.status(404);
+          res.setHeader('Content-Type','application/json');
+          res.send(JSON.stringify({'status' : 'NRP already exists'}));
+          return;
+        }
+      }
+      else{
+        res.status(201);
+        res.setHeader('Content-Type','application/json');
+        res.send(JSON.stringify({'status' : 'success'}));
+        return;
+      }
+    })
+  }
+ }
+
+exports.user=(req,res)=>{
+  conn.query("SELECT * from users",(err,rows,fields)=>{
+    if(err) console.log(err);
+    else{
+      res.status(200);
+      res.setHeader('Content-Type','application/json');
+      res.send(JSON.stringify({'users' : rows}));
+      return
+    }
+  });
+ }
+
+exports.getuserID=(req,res)=>{
+  var userID=req.params.userid;
+  if(!userID){
+    res.status(404);
+    res.setHeader('Content-Type','application/json');
+    res.send(JSON.stringify({'status' : 'error'}));
+    return;
+  }
+  else{
+    conn.query("SELECT * from users WHERE id_users=?",[userID],(err,rows,fields)=>{
+      if(err) console.log(err);
+      else{
+        if(rows.length==0){
+          res.status(404);
+          res.setHeader('Content-Type','application/json');
+          res.send(JSON.stringify({'status' : 'not found'}));
+          return;
+        }
+        else{
+          res.status(200);
+          res.setHeader('Content-Type','application/json');
+          res.send(JSON.stringify({'user' : rows}));
+          return;
+        }
+      }
+    });
+  }
+ }
+
+exports.delUserId=(req,res)=>{
+  var userID = req.params.userid;
+  if(!userID){
+    res.status(404);
+    res.setHeader('Content-Type','application/json');
+    res.send(JSON.stringify({'status' : 'error'}));
+    return;
+  }
+  else{
+    conn.query("SELECT * FROM users WHERE id_users=?",[userID],(err,rows,fields)=>{
+      if(err) console.log(err);
+      else{
+        if(rows.length==0){
+          res.status(404);
+          res.setHeader('Content-Type','application/json');
+          res.send(JSON.stringify({'status' : 'not found'}));
+          return;
+        }
+        else{
+          conn.query("DELETE FROM users WHERE id_users=?",[userID],(err,rows,fields)=>{
+            if(err) console.log(err);
+            else{
+              res.status(200);
+              res.setHeader('Content-Type','application/json');
+              res.send(JSON.stringify({'status' : 'success'}));
+              return;
+            }
+          });
+        }
+      }
+    });
+  }
+ }
+
+
+//END OF API
