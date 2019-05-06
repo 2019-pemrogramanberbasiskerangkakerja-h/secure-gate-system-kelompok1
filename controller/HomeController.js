@@ -252,5 +252,66 @@ exports.getGates=(req,res)=>{
   });
  }
 
+ exports.getGateID=(req,res)=>{
+   var gateID = req.params.gateid;
+   if(!gateID){
+     res.status(404);
+     res.setHeader('Content-Type','application/json');
+     res.send(JSON.stringify({'status' : 'error'}));
+     return;
+   }
+   else{
+     conn.query("SELECT * FROM gate WHERE id_gate=?",[gateID],(err,rows,fields)=>{
+       if(err) console.log(err);
+       else{
+         if(rows.length==0){
+           res.status(404);
+           res.setHeader('Content-Type','application/json');
+           res.send(JSON.stringify({'status' : 'not found'}));
+           return;
+         }
+         else{
+           res.status(200);
+           res.setHeader('Content-Type','application/json');
+           res.send(JSON.stringify({'gate' : rows}));
+           return;
+         }
+       }
+     });
+   }
+  }
 
+ exports.delGateID=(req,res)=>{
+   var gateID = req.params.gateid;
+   if(!gateID){
+     res.status(404);
+     res.setHeader('Content-Type','application/json');
+     res.send(JSON.stringify({'status' : 'error'}));
+     return;
+   }
+   else{
+     conn.query("SELECT * FROM gate WHERE id_gate=?",[gateID],(err,rows,fields)=>{
+       if(err) console.log(err);
+       else{
+         if(rows.length==0){
+           res.status(404);
+           res.setHeader('Content-Type','application/json');
+           res.send(JSON.stringify({'status' : 'not found'}));
+           return;
+         }
+         else{
+           conn.query("DELETE FROM gate WHERE id_gate=?",[gateID],(err,rows,fields)=>{
+             if(err) console.log(err);
+             else {
+               res.status(200);
+               res.setHeader('Content-Type','application/json');
+               res.send(JSON.stringify({'status' : 'success'}));
+               return;
+             }
+           });
+         }
+       }
+     })
+   }
+  }
 //END OF API
