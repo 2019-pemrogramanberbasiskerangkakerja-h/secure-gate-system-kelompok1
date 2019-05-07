@@ -5,6 +5,8 @@ const session = require('express-session');
 const route = require('./route/routes');
 const flash = require('express-flash');
 
+const port = process.env.PORT || 3000;
+
 const app =express();
 
 app.use(bodyParser.urlencoded({extended:false}));
@@ -29,4 +31,4 @@ app.use('/',route);
 
 app.use(express.static(__dirname + '/public'));
 
-app.listen(3000, ()=> console.log("Starting server"));
+app.listen(port, ()=> console.log("Starting server"));
