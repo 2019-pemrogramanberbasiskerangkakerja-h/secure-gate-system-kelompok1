@@ -88,14 +88,6 @@ exports.apilogin=(req,res)=>{
   var nrp = req.body.nrp;
   var password = req.body.pass;
 
-  if(!gate && !nrp && password){
-    res.status(404);
-    res.setHeader('Content-Type','application/json');
-    res.send(JSON.stringify({'error' : 'Format body (gate,nrp,pass)'}));
-    res.end();
-    return;
-  }
-
   conn.query("SELECT * from users where users.nrp=? AND users.password=?",[nrp,password],(err,rows,fields)=>{
     if(rows.length==0){ //kalau salah username / password
       console.log("username / password salah")
