@@ -20,5 +20,7 @@ route.get('/gates',HomeController.getGates);
 route.get('/gates/:gateid',HomeController.getGateID);
 route.delete('/gates/:gateid',HomeController.delGateID);
 
+route.post('/api/login',HomeController.loginapi);
+
 
 module.exports=route;
