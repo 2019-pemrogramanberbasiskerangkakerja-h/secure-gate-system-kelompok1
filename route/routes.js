@@ -4,7 +4,7 @@ const route = express.Router();
 const HomeController = require('../controller/HomeController');
 
 route.get('/',HomeController.index);
-route.post('/login',HomeController.login);
+route.post('/login',HomeController.apilogin);
 
 route.get('/dashboard',HomeController.dashboard);
 route.get('/logout',HomeController.logout);
