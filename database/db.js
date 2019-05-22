@@ -6,11 +6,11 @@ var conn_config = {
   password : "j0hnpr@s",
   database : "semj2564_pbkk"
 };
-var conn;
+var conn=mysql.createConnection(conn_config);
 
 function handleDC(){
-    conn = mysql.createConnection(conn_config);
 
+  
     conn.connect((err)=>{
       if(err){
         setTimeout(handleDC,2000);
