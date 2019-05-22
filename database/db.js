@@ -1,23 +1,23 @@
 var mysql = require('mysql');
 
-var conn = {
+var conn_config = {
   host : "srv64.niagahoster.com",
   user : "semj2564_pbkk",
   password : "j0hnpr@s",
   database : "semj2564_pbkk"
 };
-var connection;
+var conn;
 
 function handleDC(){
-    connection = mysql.createConnection(conn);
+    conn = mysql.createConnection(conn_config);
 
-    connection.connect((err)=>{
+    conn.connect((err)=>{
       if(err){
         setTimeout(handleDC,2000);
       }
     });
 
-    connection.on('error',(err)=>{
+    conn.on('error',(err)=>{
       if(err.code === 'PROTOCOL_CONNECTION_LOST'){
         handleDC();
       }
