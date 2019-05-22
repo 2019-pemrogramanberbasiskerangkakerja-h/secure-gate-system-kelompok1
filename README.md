@@ -16,5 +16,9 @@
     GET /gates : get all gates
     GET /gates/:gateid : Get Gate from gateid
     DELETE /gates/:gateid : Delete Gate from gateid
+    
+    GET /access : get all access
+    POST /access : create access
+    Requirement body -> id_user & gateid
 
 
